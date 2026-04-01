@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Você gosta de mim?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      color: #333;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .card {
+      position: relative;
+      width: min(90vw, 420px);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.2);
+    }
+
+    .buttons {
+      margin-top: 24px;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      position: relative;
+      min-height: 58px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+      user-select: none;
+      position: relative;
+    }
+
+    button:hover { transform: translateY(-2px); }
+
+    #sim {
+      background: #28a745;
+      color: white;
+    }
+
+    #nao {
+      background: #dc3545;
+      color: white;
+      position: relative;
+      transform: translate(0, 0);
+    }
+
+    #fofo {
+      max-width: 100%;
+      border-radius: 14px;
+      margin-top: 22px;
+      display: none;
+      border: 2px solid #fff;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+
+    .info {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1>Você gosta de mim?</h1>
+    <p class="info">Escolha uma opção:</p>
+    <div class="buttons">
+      <button id="sim">Sim</button>
+      <button id="nao">Não</button>
+    </div>
+    <p id="mensagem" style="display: none; margin-top: 16px; font-weight: bold; color: #444;"></p>
+    <img id="fofo" src="https://preview.redd.it/uma-flor-pra-voc%C3%AA-v0-m0s270n2e5yf1.jpeg?width=640&crop=smart&auto=webp&s=07a1ecf9034a527f7d060f136c461d8c02c59224" alt="Imagem fofa" />
+    <p style="text-align: center; margin-top: 14px; color: #444; font-size: 0.9rem;">© 2026 LeoGibertoni</p>  
+</div>
+
+  <script>
+    const botaoNao = document.getElementById('nao');
+    const botaoSim = document.getElementById('sim');
+    const imagem = document.getElementById('fofo');
+    const mensagem = document.getElementById('mensagem');
+    const card = document.getElementById('card');
+
+    const moveNao = () => {
+      const parent = botaoNao.parentElement;
+      const parentRect = parent.getBoundingClientRect();
+      const naoRect = botaoNao.getBoundingClientRect();
+      const simRect = botaoSim.getBoundingClientRect();
+      const startX = botaoNao.offsetLeft;
+      const startY = botaoNao.offsetTop;
+      const margin = 8;
+
+      const availableWidth = Math.max(0, parentRect.width - naoRect.width - margin * 2);
+      const availableHeight = Math.max(0, parentRect.height - naoRect.height - margin * 2);
+
+      const simRelX = simRect.left - parentRect.left;
+      const simRelY = simRect.top - parentRect.top;
+      const simRelRight = simRelX + simRect.width;
+      const simRelBottom = simRelY + simRect.height;
+
+      let targetX, targetY, attempts = 0;
+      do {
+        targetX = margin + Math.random() * availableWidth;
+        targetY = margin + Math.random() * availableHeight;
+
+        const naoLeft = targetX;
+        const naoTop = targetY;
+        const naoRight = naoLeft + naoRect.width;
+        const naoBottom = naoTop + naoRect.height;
+
+        const overlap = !(naoRight < simRelX || naoLeft > simRelRight || naoBottom < simRelY || naoTop > simRelBottom);
+        if (!overlap) break;
+        attempts += 1;
+      } while (attempts < 15);
+
+      const deltaX = targetX - startX;
+      const deltaY = targetY - startY;
+
+      botaoNao.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    };
+
+    botaoNao.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNao();
+    });
+
+    botaoSim.addEventListener('click', () => {
+      imagem.style.display = 'block';
+      mensagem.style.display = 'block';
+      botaoSim.textContent = 'Sabia!';
+      mensagem.textContent = 'Você é muito importante pra mim! 💖';
+    });
+
+    window.addEventListener('resize', () => {
+      botaoNao.style.transform = 'translate(0, 0)';
+    });
+  </script>
+</body>
+</html>
